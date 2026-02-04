@@ -10,13 +10,16 @@ RUN apt-get update \
     build-essential \
   && rm -rf /var/lib/apt/lists/*
 
+# Enable pnpm via corepack (OpenClaw requires pnpm for build)
+RUN corepack enable
+
 # Clone and build OpenClaw from private repository
 # Requires GITHUB_TOKEN build arg with 'repo' scope
 ARG GITHUB_TOKEN
 RUN git clone https://${GITHUB_TOKEN}@github.com/jankadlecek/openclaw.git /tmp/openclaw \
   && cd /tmp/openclaw \
-  && npm install \
-  && npm run build \
+  && pnpm install \
+  && pnpm run build \
   && npm link \
   && rm -rf /tmp/openclaw/.git
 
