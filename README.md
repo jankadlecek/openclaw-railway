@@ -63,10 +63,37 @@ The web TUI implements multiple security layers:
 | `TUI_IDLE_TIMEOUT_MS` | `300000` (5 min) | Closes session after inactivity |
 | `TUI_MAX_SESSION_MS` | `1800000` (30 min) | Maximum session duration |
 
+## Railway Deployment
+
+This template builds OpenClaw from the private repository `jankadlecek/openclaw` during the Docker build process.
+
+### Required: GitHub Personal Access Token
+
+You need to provide a GitHub Personal Access Token so Railway can clone the private repository during build.
+
+**Creating the token:**
+
+1. Go to https://github.com/settings/tokens/new
+2. Set a note like "Railway OpenClaw Build"
+3. Select scope: **`repo`** (Full control of private repositories)
+4. Click "Generate token" and copy it
+
+**Adding to Railway:**
+
+1. Open your Railway project
+2. Go to **Settings** → **Variables**
+3. Add a new **Build Variable**:
+   - Name: `GITHUB_TOKEN`
+   - Value: (paste your token)
+4. Redeploy the service
+
+**Important:** Without this token, the build will fail with "repository not found" error.
+
 ## Local testing
 
 ```bash
-docker build -t openclaw-railway-template .
+# Build with your GitHub token (required to clone private repo)
+docker build --build-arg GITHUB_TOKEN=ghp_your_token_here -t openclaw-railway-template .
 
 docker run --rm -p 8080:8080 \
   -e PORT=8080 \
