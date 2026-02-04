@@ -28,8 +28,8 @@ npm run lint
 ## Docker Build & Local Testing
 
 ```bash
-# Build the container
-docker build -t openclaw-railway-template .
+# Build the container (requires GitHub token with 'repo' scope)
+docker build --build-arg GITHUB_TOKEN=ghp_your_token_here -t openclaw-railway-template .
 
 # Run locally with volume
 docker run --rm -p 8080:8080 \
@@ -74,7 +74,7 @@ open http://localhost:8080/setup  # password: test
   - **setup.html**: Setup wizard HTML structure
   - **styles.css**: Setup wizard styling (extracted from inline styles)
   - **setup-app.js**: Client-side JS for `/setup` wizard (vanilla JS, no build step)
-- **Dockerfile**: Single-stage build (installs OpenClaw via npm, installs wrapper deps)
+- **Dockerfile**: Single-stage build (clones and builds OpenClaw from private repo `jankadlecek/openclaw`, installs wrapper deps)
 
 ### Environment Variables
 
@@ -162,8 +162,9 @@ Edit `buildOnboardArgs()` (src/server.js:442-496) to add new CLI flags or auth p
 
 - Template must mount a volume at `/data`
 - Must set `SETUP_PASSWORD` in Railway Variables
+- Must set `GITHUB_TOKEN` as a **Build Variable** in Railway (with `repo` scope to access private `jankadlecek/openclaw` repository)
 - Public networking must be enabled (assigns `*.up.railway.app` domain)
-- OpenClaw is installed via `npm install -g openclaw@latest` during Docker build
+- OpenClaw is cloned and built from private repository `jankadlecek/openclaw` (main branch) during Docker build
 
 ## Serena Semantic Coding
 
